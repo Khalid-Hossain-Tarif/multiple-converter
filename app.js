@@ -19,6 +19,32 @@ const converter = {
       squareYard: "Square yard",
       squareFoot: "Square foot",
     },
+    variants: {
+      "squareKm:squareM": {
+        formula: "multiply the length value by 1000",
+        calculation(n) {
+          return n * 1000;
+        },
+      },
+      "squareKm:squareMile": {
+        formula: "for an approximate result, divide the length value by 2.59",
+        calculation(n) {
+          return n / 2.59;
+        },
+      },
+      "squareKm:squareYard": {
+        formula: "multiply the area value by 1196000",
+        calculation(n) {
+          return n * 1196000;
+        },
+      },
+      "squareKm:squareFoot": {
+        formula: "multiply the length value by 10760000",
+        calculation(n) {
+          return n * 10760000;
+        },
+      },
+    },
   },
 
   mass: {
@@ -64,6 +90,9 @@ let lastRightSelectedValue = "";
 
 function main() {
   const categorySelect = document.getElementById("category-select");
+  const leftInput = document.getElementById("left-input");
+  const rightInput = document.getElementById("right-input");
+  const formulaText = document.getElementById("formula-text");
   const leftSelect = document.getElementById("left-select");
   const rightSelect = document.getElementById("right-select");
 
@@ -75,6 +104,14 @@ function main() {
 
   //Set default selected item
   updateCategoryChanges(categorySelect, leftSelect, rightSelect);
+
+  const converterName = categorySelect.value;
+  const variants = converter[converterName].variants;
+  const variantKey = `${leftSelect.value}:${rightSelect.value}`;
+  const variant = variants[variantKey];
+  formulaText.innerText = variant.formula;
+  leftInput.value = 1;
+  rightInput.value = variant.calculation(1);
 
   categorySelect.addEventListener("change", function () {
     updateCategoryChanges(categorySelect, leftSelect, rightSelect);
