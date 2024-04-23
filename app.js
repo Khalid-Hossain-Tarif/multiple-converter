@@ -59,6 +59,9 @@ const converter = {
   // },
 };
 
+let lastLeftSelectedValue = "";
+let lastRightSelectedValue = "";
+
 function main() {
   const categorySelect = document.getElementById("category-select");
   const leftSelect = document.getElementById("left-select");
@@ -75,6 +78,34 @@ function main() {
 
   categorySelect.addEventListener("change", function () {
     updateCategoryChanges(categorySelect, leftSelect, rightSelect);
+  });
+
+  leftSelect.addEventListener("change", function (event) {
+    if (event.target.value === rightSelect.value) {
+      const options = rightSelect.getElementsByTagName("option");
+      for (let i = 0; i < options.length; i++) {
+        if (lastLeftSelectedValue == options[i].value) {
+          options[i].selected = "selected";
+          lastRightSelectedValue = options[i].value;
+          break;
+        }
+      }
+    }
+    lastLeftSelectedValue = event.target.value;
+  });
+
+  rightSelect.addEventListener("change", function (event) {
+    if (event.target.value === leftSelect.value) {
+      const options = leftSelect.getElementsByTagName("option");
+      for (let i = 0; i < options.length; i++) {
+        if (lastRightSelectedValue === options[i].value) {
+          options[i].selected = "selected";
+          lastLeftSelectedValue = options[i].value;
+          break;
+        }
+      }
+    }
+    lastRightSelectedValue = event.target.value;
   });
 }
 
@@ -104,6 +135,7 @@ function updateCategoryChanges(categorySelect, leftSelect, rightSelect) {
   options.forEach((item) => {
     addOption(leftSelect, { value: item, text: units[item] });
   });
+  lastLeftSelectedValue = leftSelect.value;
 
   //handle right select
   removeAllChild(rightSelect);
@@ -112,4 +144,5 @@ function updateCategoryChanges(categorySelect, leftSelect, rightSelect) {
   });
 
   rightSelect.getElementsByTagName("option")[1].selected = "selected";
+  lastRightSelectedValue = rightSelect.value;
 }
