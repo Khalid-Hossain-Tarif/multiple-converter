@@ -21,27 +21,27 @@ const converter = {
     },
     variants: {
       "squareKm:squareM": {
-        formula: "multiply the length value by 1000",
+        formula: "multiply value by 1000000",
         calculation(n) {
-          return n * 1000;
+          return n * 1000000;
         },
       },
       "squareKm:squareMile": {
-        formula: "for an approximate result, divide the length value by 2.59",
+        formula: "divide the area value by 2.59",
         calculation(n) {
           return n / 2.59;
         },
       },
       "squareKm:squareYard": {
-        formula: "multiply the area value by 1196000",
+        formula: "multiply the area value by 1.196e+6",
         calculation(n) {
-          return n * 1196000;
+          return n * Number(1.196e+6);
         },
       },
       "squareKm:squareFoot": {
-        formula: "multiply the length value by 10760000",
+        formula: "for an approximate result, multiply the area value by 1.076e+7",
         calculation(n) {
-          return n * 10760000;
+          return n * Number(1.076e+7);
         },
       },
     },
@@ -55,33 +55,53 @@ const converter = {
       gram: "Gram",
       milligram: "Milligram",
     },
+    variants: {
+      "tonne:kilogram": {
+        formula: "multiply the mass value by 1000",
+        calculation(n) {
+          return n * 1000;
+        },
+      },
+      "tonne:gram": {
+        formula: "multiply the mass value by 1e+6",
+        calculation(n) {
+          return n * Number(1e+6);
+        },
+      },
+      "tonne:milligram": {
+        formula: "multiply the mass value by 1e+9",
+        calculation(n) {
+          return n * Number(1e+9);
+        },
+      },
+    },
   },
 
   length: {
     name: "Length",
     units: {
-      kilometre: "Kilometre",
+      kilometer: "Kilometer",
       metre: "Metre",
-      centimetre: "Centimetre",
-      millimetre: "Millimetre",
+      centimeter: "Centimeter",
+      millimeter: "Millimeter",
     },
     variants: {
-      "kilometre:metre": {
-        formula: "multiply the length value by 100",
+      "kilometer:metre": {
+        formula: "multiply the length value by 1000",
         calculation(n) {
-          return n * 100;
+          return n * 1000;
         },
       },
-      "kilometre:centimetre": {
-        formula: "for an approximate result, divide the length value by 20",
+      "kilometer:centimeter": {
+        formula: "multiply the length value by 100000",
         calculation(n) {
-          return n / 20;
+          return n * 100000;
         },
       },
-      "kilometre:millimetre": {
-        formula: "multiply the area value by 10",
+      "kilometer:millimeter": {
+        formula: "multiply the length value by 1e+6",
         calculation(n) {
-          return n * 10;
+          return n * Number(1e+6);
         },
       },
     },
@@ -94,6 +114,26 @@ const converter = {
       minute: "Minute",
       hour: "Hour",
       day: "Day",
+    },
+    variants: {
+      "second:minute": {
+        formula: "divide the time value by 60",
+        calculation(n) {
+          return n / 60;
+        },
+      },
+      "second:hour": {
+        formula: "divide the time value by 3600",
+        calculation(n) {
+          return n / 3600;
+        },
+      },
+      "second:day": {
+        formula: "divide the time value by 86400",
+        calculation(n) {
+          return n / 86400;
+        },
+      },
     },
   },
 
