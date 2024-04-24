@@ -65,6 +65,26 @@ const converter = {
       centimetre: "Centimetre",
       millimetre: "Millimetre",
     },
+    variants: {
+      "kilometre:metre": {
+        formula: "multiply the length value by 100",
+        calculation(n) {
+          return n * 100;
+        },
+      },
+      "kilometre:centimetre": {
+        formula: "for an approximate result, divide the length value by 20",
+        calculation(n) {
+          return n / 20;
+        },
+      },
+      "kilometre:millimetre": {
+        formula: "multiply the area value by 10",
+        calculation(n) {
+          return n * 10;
+        },
+      },
+    },
   },
 
   time: {
@@ -90,11 +110,10 @@ let lastRightSelectedValue = "";
 
 function main() {
   const categorySelect = document.getElementById("category-select");
-  const leftInput = document.getElementById("left-input");
-  const rightInput = document.getElementById("right-input");
-  const formulaText = document.getElementById("formula-text");
   const leftSelect = document.getElementById("left-select");
   const rightSelect = document.getElementById("right-select");
+  const leftInput = document.getElementById("left-input");
+  const rightInput = document.getElementById("right-input");
 
   const convertKeys = Object.keys(converter).sort();
   removeAllChild(categorySelect);
@@ -105,18 +124,40 @@ function main() {
   //Set default selected item
   updateCategoryChanges(categorySelect, leftSelect, rightSelect);
 
-  const converterName = categorySelect.value;
-  const variants = converter[converterName].variants;
-  const variantKey = `${leftSelect.value}:${rightSelect.value}`;
-  const variant = variants[variantKey];
-  formulaText.innerText = variant.formula;
-  leftInput.value = 1;
-  rightInput.value = variant.calculation(1);
-
   categorySelect.addEventListener("change", function () {
     updateCategoryChanges(categorySelect, leftSelect, rightSelect);
   });
 
+
+  //Left input input value change event listener
+  leftInput.addEventListener("keyup", function(event) {
+    if(event.target.value && !isNaN(event.target.value)) {
+      const converterName = categorySelect.value;
+      const variants = converter[converterName].variants;
+      const variantKey = `${leftSelect.value}:${rightSelect.value}`;
+      const variant = variants[variantKey];
+      leftInput.value = Number(event.target.value);
+      rightInput.value = variant.calculation(Number(event.target.value));
+    } else {
+      rightInput.value = '';
+    }
+  });
+
+  //Right input input value change event listener
+  rightInput.addEventListener("keyup", function(event) {
+    if(event.target.value && !isNaN(event.target.value)) {
+      const converterName = categorySelect.value;
+      const variants = converter[converterName].variants;
+      const variantKey = `${leftSelect.value}:${rightSelect.value}`;
+      const variant = variants[variantKey];
+      rightInput.value = Number(event.target.value);
+      leftInput.value = variant.calculation(Number(event.target.value));
+    } else {
+      leftInput.value = '';
+    }
+  });
+
+  //Left select box option change event listener
   leftSelect.addEventListener("change", function (event) {
     if (event.target.value === rightSelect.value) {
       const options = rightSelect.getElementsByTagName("option");
@@ -129,8 +170,10 @@ function main() {
       }
     }
     lastLeftSelectedValue = event.target.value;
+    calculateValue(categorySelect, leftSelect, rightSelect);
   });
 
+  //Right select box option change event listener
   rightSelect.addEventListener("change", function (event) {
     if (event.target.value === leftSelect.value) {
       const options = leftSelect.getElementsByTagName("option");
@@ -143,6 +186,7 @@ function main() {
       }
     }
     lastRightSelectedValue = event.target.value;
+    calculateValue(categorySelect, leftSelect, rightSelect);
   });
 }
 
@@ -182,4 +226,21 @@ function updateCategoryChanges(categorySelect, leftSelect, rightSelect) {
 
   rightSelect.getElementsByTagName("option")[1].selected = "selected";
   lastRightSelectedValue = rightSelect.value;
+
+  calculateValue(categorySelect, leftSelect, rightSelect);
+}
+
+//Calculate value function
+function calculateValue(categorySelect, leftSelect, rightSelect) {
+  const leftInput = document.getElementById("left-input");
+  const rightInput = document.getElementById("right-input");
+  const formulaText = document.getElementById("formula-text");
+
+  const converterName = categorySelect.value;
+  const variants = converter[converterName].variants;
+  const variantKey = `${leftSelect.value}:${rightSelect.value}`;
+  const variant = variants[variantKey];
+  formulaText.innerText = variant.formula;
+  leftInput.value = 1;
+  rightInput.value = variant.calculation(1);
 }
